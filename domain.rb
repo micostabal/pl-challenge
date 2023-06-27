@@ -20,7 +20,7 @@ class Artist
   end
   
   def to_s()
-    "#{@name}, whose popularity is #{@popularity}."
+    "#{@name}, whose popularity is #{@popularity}"
   end
   
   def get_most_popular_track()

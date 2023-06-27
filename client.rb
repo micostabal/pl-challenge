@@ -73,7 +73,7 @@ class SpotifyClient
     request['Authorization'] = "Bearer #{@token}"
     
     response = Net::HTTP.start(url.hostname, url.port,
-      :use_ssl => artistUrl.scheme == 'https') { |http|
+      :use_ssl => url.scheme == 'https') { |http|
       http.request(request)
     }
     

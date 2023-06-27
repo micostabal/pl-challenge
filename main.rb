@@ -1,19 +1,31 @@
-require_relative "SpotifyClient"
+require_relative "client"
+require_relative "loader"
+require_relative "domain"
 
-artist_id = "4gzpq5DPGxSnKTe4SA8HAU"
-market = "CL"
+artists_file = File.open "./artists.json"
 
-file = File.open "./credentials.json"
+artists_data = JSON.load artists_file
 
-data = JSON.load file
+credentials_file = File.open "./credentials.json"
+
+auth_data = JSON.load credentials_file
 
 client = SpotifyClient.new(
-  data['client_id'],
-  data['client_secret']
+  auth_data['client_id'],
+  auth_data['client_secret']
 )
 
 client.authenticate()
 
-artist_response = client.get_artist(artist_id)
+loader = Loader.new(client)
 
-puts artist_response
+artists = []
+
+artists_data.each { |artist_id|
+  artist = loader.load_artist_from_id(artist_id)
+  artists.push(artist)
+}
+
+artists.sort.each { |artist|
+  puts artist.summary
+}

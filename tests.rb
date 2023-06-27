@@ -30,7 +30,7 @@ class RelevantTests < Test::Unit::TestCase
     assert_equal(coldplay < radiohead, true)
   end
 
-  def test_artis_gets_first_track_right
+  def test_artist_gets_first_track_right
     coldplay = @@artists[0]
     
     coldplay.add_track(@@tracks[0])
