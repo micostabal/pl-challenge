@@ -4,6 +4,7 @@ require 'net/http'
 
 
 class SpotifyClient
+  ## TODO: Move to config file
   @@TOKEN_URL = 'https://accounts.spotify.com/api/token'
   @@ARTISTS_URL = 'https://api.spotify.com/v1/artists'
 
@@ -27,7 +28,7 @@ class SpotifyClient
     }
 
     url = URI.parse(@@TOKEN_URL)
-
+    
     request = Net::HTTP::Post.new(url.path)
 
     http = Net::HTTP.new(url.host, url.port)
@@ -37,26 +38,30 @@ class SpotifyClient
     
     request['Content-Type'] = 'application/x-www-form-urlencoded'
     
-    response = Net::HTTP.start(url.hostname, url.port,
-      :use_ssl => url.scheme == 'https') {|http|
-      http.request(request)
-    }
+    response = execute_https_request(request, url)
     
-    token = JSON.parse(response.body)['access_token']
-    
-    self.set_token = token
+    self.set_token = response['access_token']
   end
   
   def get_artist(artist_id)
     url = URI("#{@@ARTISTS_URL}/#{artist_id}")
     
-    request = Net::HTTP::Get.new(url)
+    request = self.create_authorized_get_request(url)
     
-    request['Authorization'] = "Bearer #{@token}"
+    return self.execute_https_request(request, url)
+  end
+  
+  def get_artist_top_tracks(artist_id, market)
+    url = URI.parse("#{@@ARTISTS_URL}/#{artist_id}/top-tracks?market=#{market}")
     
-    http = Net::HTTP.new(url.host, url.port)
-    http.use_ssl = true
+    request = self.create_authorized_get_request(url)
     
+    return self.execute_https_request(request, url)
+  end
+
+  def execute_https_request(request, url)
+    ## TODO: See if we can wrap all requests inside ths context
+    ## to speed up the requests
     response = Net::HTTP.start(url.hostname, url.port,
       :use_ssl => url.scheme == 'https') { |http|
       http.request(request)
@@ -65,19 +70,12 @@ class SpotifyClient
     return JSON.parse(response.body)
   end
   
-  def get_artist_top_tracks(artist_id, market)
-    url = URI.parse("#{@@ARTISTS_URL}/#{artist_id}/top-tracks?market=#{market}")
-    
+  def create_authorized_get_request(url)
     request = Net::HTTP::Get.new(url)
     
     request['Authorization'] = "Bearer #{@token}"
     
-    response = Net::HTTP.start(url.hostname, url.port,
-      :use_ssl => url.scheme == 'https') { |http|
-      http.request(request)
-    }
-    
-    return JSON.parse(response.body)
+    return request
   end
 
 end

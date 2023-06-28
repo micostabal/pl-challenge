@@ -15,7 +15,8 @@ class RelevantTests < Test::Unit::TestCase
     Track.new('High', 80),
     Track.new('Dancing Queen', 82),
     Track.new('Viva la vida', 80),
-    Track.new('The Scientist', 79)
+    Track.new('The Scientist', 79),
+    Track.new('No Surprises', 81)
   ]
   
   def test_track_order
@@ -29,8 +30,8 @@ class RelevantTests < Test::Unit::TestCase
     radiohead = @@artists[1]
     assert_equal(coldplay < radiohead, true)
   end
-
-  def test_artist_gets_first_track_right
+  
+  def test_artist_gets_first_track_right_multiple_max
     coldplay = @@artists[0]
     
     coldplay.add_track(@@tracks[0])
@@ -40,6 +41,17 @@ class RelevantTests < Test::Unit::TestCase
     first_track = coldplay.get_most_popular_track
     
     assert_equal(first_track.name, @@tracks[4].name)
+  end
+
+  def test_artist_gets_first_track_right_single_max
+    radiohead = @@artists[1]
+    
+    radiohead.add_track(@@tracks[2])
+    radiohead.add_track(@@tracks[6])
+    
+    first_track = radiohead.get_most_popular_track
+    
+    assert_equal(first_track.name, @@tracks[6].name)
   end
  
 end
