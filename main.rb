@@ -8,7 +8,7 @@ require_relative "util"
 ARTISTS_FILE = "./artists.json"
 CREDENTIALS_FILE = "./credentials.json"
 
-artists_file = open_json_file(ARTISTS_FILE)
+artists_data = open_json_file(ARTISTS_FILE)
 
 cli = CLI.new()
 

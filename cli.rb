@@ -4,7 +4,7 @@ require 'io/console'
 class CLI
   def get_credentials(filename)
     if file_exists(filename)
-      credentials_file = open_json_file(filename)
+      auth_data = open_json_file(filename)
       
       client_id = auth_data['client_id']
       client_secret = auth_data['client_secret']
