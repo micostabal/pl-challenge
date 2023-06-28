@@ -20,6 +20,7 @@ class SpotifyClient
     @token=new_token
   end
   
+  ## TODO: Split this huge method
   def authenticate()
     params = {
       :grant_type => "client_credentials",
@@ -60,8 +61,6 @@ class SpotifyClient
   end
 
   def execute_https_request(request, url)
-    ## TODO: See if we can wrap all requests inside ths context
-    ## to speed up the requests
     response = Net::HTTP.start(url.hostname, url.port,
       :use_ssl => url.scheme == 'https') { |http|
       http.request(request)
